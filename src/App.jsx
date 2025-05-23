@@ -33,7 +33,7 @@ function App() {
       });
     });
 
-    const handleKeyDown = (e) => {
+    const handleKeyDown = async (e) => {
       const model = modelRef.current;
       if (!model) return;
 
@@ -46,6 +46,24 @@ function App() {
       } else if (e.key.toLowerCase() === 'g') {
         model.speak("./aud.wav")
       }
+      //  else if (e.key.toLowerCase() === 'a') {
+
+      //   console.log("fetching ")
+      //   fetch("http://localhost:8192/llm_process", {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({ user_input: " hello how do I use react" }),
+      //   })
+      //     .then((res) => res.json())
+      //     .then((data) => {
+      //       console.log(data);
+      //     })
+      //     .catch((err) => {
+      //       console.error("Error:", err);
+      //     });
+      // }
     };
 
     window.addEventListener("keydown", handleKeyDown);
