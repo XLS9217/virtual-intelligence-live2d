@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import * as PIXI from "pixi.js";
 import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch';
+import { AudioInteraction } from "./AudioInteraction";
 
 window.PIXI = PIXI;
 
@@ -37,8 +38,6 @@ function App() {
       const model = modelRef.current;
       if (!model) return;
 
-      console.log("speak")
-
       if (e.key.toLowerCase() === 'q') {
         model.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", 1);
       } else if (e.key.toLowerCase() === 'e') {
@@ -46,24 +45,55 @@ function App() {
       } else if (e.key.toLowerCase() === 'g') {
         model.speak("./aud.wav")
       }
-      //  else if (e.key.toLowerCase() === 'a') {
 
-      //   console.log("fetching ")
-      //   fetch("http://localhost:8192/llm_process", {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify({ user_input: " hello how do I use react" }),
-      //   })
-      //     .then((res) => res.json())
-      //     .then((data) => {
-      //       console.log(data);
-      //     })
-      //     .catch((err) => {
-      //       console.error("Error:", err);
-      //     });
-      // }
+
+
+
+
+      //------------------test
+       else if (e.key.toLowerCase() === 'a') {
+
+        console.log("fetching ")
+        fetch("http://localhost:8192/llm_process", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ user_input: " hello how do I use react" }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((err) => {
+            console.error("Error:", err);
+          });
+      }
+
+      else if (e.key.toLowerCase() === 'd') {
+
+        console.log("fetching ")
+        fetch("http://localhost:8192/tts_speak", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: " hello how do I use react" }),
+        })
+        .then(res => {
+          if (!res.ok) throw new Error("Network response was not ok");
+          return res.blob(); // get response as blob (audio file)
+        })
+        .then(blob => {
+          console.log("Audio blob received", blob);
+          // Create a URL and play audio
+          const audioUrl = URL.createObjectURL(blob);
+          const audio = new Audio(audioUrl);
+          audio.play();
+        })
+        .catch(err => {
+          console.error("Error:", err);
+        });
+
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -72,7 +102,10 @@ function App() {
     };
   }, []);
 
-  return <canvas id="canvas" />;
+  return <>
+    <canvas id="canvas" />
+    <AudioInteraction modelRef = {modelRef}/>
+  </>;
 }
 
 export default App;
